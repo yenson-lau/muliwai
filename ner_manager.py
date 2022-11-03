@@ -91,7 +91,7 @@ def load_hf_ner_pipelines(target_lang, device="cpu", device_id=-1):
                 ner_pipeline = pipeline("ner", model=model, tokenizer=tokenizer)
               else:
                 model = model.half()
-                ner_pipeline = pipeline("ner", model=model, tokenizer=tokenizer, device=device) #device_id)
+                ner_pipeline = pipeline("ner", model=model, tokenizer=tokenizer, device=device_id)
               ner_model2pipelines[(model_name, device)] = ner_pipeline
           else:
               ner_pipeline = ner_model2pipelines[(model_name, device)]
