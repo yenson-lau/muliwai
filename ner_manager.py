@@ -76,8 +76,11 @@ ner_model2pipelines = {}
 
 def load_hf_ner_pipelines(target_lang, device="cpu", device_id=-1):
     """ Loads and stores a set of NER pipelines in a cache"""
-    if device != "cpu" and device_id == -1 and ":" in device:
-      device_id = int(device.split(":")[-1])
+    if device_id < 0 and device != "cpu":
+      if ":" in device:
+        device_id = int(device.split(":")[-1])
+      else:
+        device_id = 0
     pipelines = []
     for model_name, model_cls, hf_ner_weight2 in hf_ner_model_map.get(target_lang, []):
           if (model_name, device) not in ner_model2pipelines:
@@ -360,29 +363,30 @@ def spacy_ner(docs, src_lang="en", nlp=None, stopwords=None, spacy_weight=1.9, e
       Use the spacy models to create mentions w/ NER
       """
       #print ("spacy_ner")
-      if nlp is None:  #init spacy pipeline
-        if src_lang == 'en':
-          nlp = self.en_spacy_nlp
-        elif src_lang == 'zh':
-          try:
-            nlp = spacy.load('zh_core_web_sm')
-          except:
-            pass
-        elif src_lang == 'pt':
-          try:
-            nlp = spacy.load('pt_core_news_sm')
-          except:
-            pass
-        elif src_lang == 'fr':
-          try:
-            nlp = spacy.load('fr_core_news_sm')
-          except:
-            pass
-        elif src_lang == 'ca':
-          try:
-            nlp = spacy.load('ca_core_news_sm')
-          except:
-            pass
+      if  nlp is None:
+          #init spacy pipeline
+          if src_lang == 'en':
+            nlp = self.en_spacy_nlp
+          elif src_lang == 'zh':
+            try:
+              nlp = spacy.load('zh_core_web_sm')
+            except:
+              pass
+          elif src_lang == 'pt':
+            try:
+              nlp = spacy.load('pt_core_news_sm')
+            except:
+              pass
+          elif src_lang == 'fr':
+            try:
+              nlp = spacy.load('fr_core_news_sm')
+            except:
+              pass
+          elif src_lang == 'ca':
+            try:
+              nlp = spacy.load('ca_core_news_sm')
+            except:
+              pass
 
       if nlp is not None:
         if stopwords is None:
